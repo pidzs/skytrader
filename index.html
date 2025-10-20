@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Skytrader — Dashboard (Demo)</title>
+  <style>
+    :root{
+      --bg1:#87cefa; /* skyblue */
+      --bg2:#e0f7ff;
+      --accent:#0b72ff;
+      --card: rgba(255,255,255,0.9);
+      --glass: rgba(255,255,255,0.12);
+      --glass-2: rgba(255,255,255,0.06);
+    }
+    *{box-sizing:border-box;font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial}
+    html,body{height:100%;margin:0}
+    body{
+      background: linear-gradient(180deg,var(--bg1) 0%, var(--bg2) 70%);
+      color:#03334a;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    .container{max-width:1100px;margin:28px auto;padding:20px}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    .brand{display:flex;gap:14px;align-items:center}
+    .logo{width:54px;height:54px;border-radius:12px;background:linear-gradient(135deg,#0b72ff,#66b3ff);display:flex;align-items:center;justify-content:center;color:white;font-weight:700;box-shadow:0 6px 18px rgba(11,114,255,0.18)}
+    h1{font-size:20px;margin:0}
+    p.lead{margin:0;color:rgba(3,51,74,0.7)}
+    .controls{display:flex;gap:8px;align-items:center}
+    .btn{background:var(--accent);color:white;padding:8px 12px;border-radius:8px;border:0;cursor:pointer;box-shadow:0 6px 18px rgba(11,114,255,0.12)}
+    .btn.secondary{background:transparent;color:#03334a;border:1px solid rgba(3,51,74,0.08)}
+
+    main{display:grid;grid-template-columns:1fr 340px;gap:18px}
+    .card{background:var(--card);border-radius:12px;padding:14px;box-shadow:0 6px 18px rgba(2,20,35,0.06)}
+
+    /* Left big area */
+    .chart-area{display:flex;flex-direction:column;gap:12px}
+    .chart-top{display:flex;justify-content:space-between;align-items:center}
+    .kpis{display:flex;gap:10px}
+    .kpi{background:var(--glass);padding:10px;border-radius:10px;min-width:120px;text-align:left}
+    .kpi h3{margin:0;font-size:18px}
+    .kpi p{margin:0;font-size:13px;color:rgba(3,51,74,0.6)}
+    canvas{width:100%;height:280px;border-radius:8px;background:linear-gradient(180deg, rgba(255,255,255,0), rgba(255,255,255,0.02));}
+
+    /* Right sidebar */
+    .sidebar .trade-form{display:flex;flex-direction:column;gap:10px}
+    label{font-size:13px;color:rgba(3,51,74,0.7)}
+    input[type=text],select{padding:10px;border-radius:8px;border:1px solid rgba(3,51,74,0.08)}
+    .trade-actions{display:flex;gap:8px}
+    .buy{background:linear-gradient(90deg,#12c24b,#0b8f3d);color:white;border:0;padding:10px;border-radius:8px;flex:1}
+    .sell{background:linear-gradient(90deg,#ff6b6b,#ff3b3b);color:white;border:0;padding:10px;border-radius:8px;flex:1}
+
+    /* trades table */
+    table{width:100%;border-collapse:collapse}
+    th,td{padding:8px;text-align:left;border-bottom:1px solid rgba(3,51,74,0.06);font-size:13px}
+    th{font-size:12px;color:rgba(3,51,74,0.7)}
+
+    footer{margin-top:18px;text-align:center;color:rgba(3,51,74,0.6);font-size:13px}
+
+    /* responsive */
+    @media (max-width:900px){
+      main{grid-template-columns:1fr}
+      .container{padding:12px}
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="brand">
+        <div class="logo">ST</div>
+        <div>
+          <h1>Skytrader</h1>
+          <p class="lead">Demo dashboard — Market snapshot & quick trade (dummy)</p>
+        </div>
+      </div>
+      <div class="controls">
+        <div style="text-align:right">
+          <div style="font-size:12px;color:rgba(3,51,74,0.6)">Balance</div>
+          <div style="font-weight:700">$12,480.50</div>
+        </div>
+        <button class="btn">Connect</button>
+      </div>
+    </header>
+
+    <main>
+      <section class="card chart-area">
+        <div class="chart-top">
+          <div>
+            <h2 style="margin:0">BTC / USD</h2>
+            <div style="font-size:13px;color:rgba(3,51,74,0.6)">Spot price • Live demo</div>
+          </div>
+          <div class="kpis">
+            <div class="kpi"><h3>$48,720</h3><p>Price</p></div>
+            <div class="kpi"><h3>+2.8%</h3><p>24h</p></div>
+            <div class="kpi"><h3>1.23 BTC</h3><p>Holdings</p></div>
+          </div>
+        </div>
+
+        <div class="card" style="padding:12px">
+          <canvas id="priceChart"></canvas>
+        </div>
+
+        <div class="card" style="display:flex;gap:12px;flex-direction:column">
+          <h3 style="margin:0 0 6px 0">Recent Orders</h3>
+          <table>
+            <thead><tr><th>Time</th><th>Type</th><th>Price</th><th>Amount</th></tr></thead>
+            <tbody id="ordersTbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <aside class="sidebar">
+        <div class="card trade-form">
+          <h3 style="margin:0">Quick Trade</h3>
+          <label>Pair</label>
+          <select id="pairSelect">
+            <option>BTC / USD</option>
+            <option>ETH / USD</option>
+            <option>SOL / USD</option>
+          </select>
+          <label>Price</label>
+          <input id="priceInput" type="text" value="48720">
+          <label>Amount</label>
+          <input id="amountInput" type="text" value="0.01">
+          <div style="display:flex;gap:10px;align-items:center;justify-content:space-between">
+            <div style="font-size:13px;color:rgba(3,51,74,0.6)">Estimated: <span id="estVal">$487.20</span></div>
+            <div style="font-size:12px;color:rgba(3,51,74,0.5)">Fee 0.1%</div>
+          </div>
+          <div class="trade-actions">
+            <button class="buy" id="buyBtn">Buy</button>
+            <button class="sell" id="sellBtn">Sell</button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:12px">
+          <h3 style="margin:0 0 8px 0">Open Positions</h3>
+          <table>
+            <thead><tr><th>Asset</th><th>Size</th><th>Entry</th></tr></thead>
+            <tbody>
+              <tr><td>BTC</td><td>0.50</td><td>$45,000</td></tr>
+              <tr><td>ETH</td><td>2.00</td><td>$3,200</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </aside>
+    </main>
+
+    <footer>
+      This is a demo static dashboard for <strong>Skytrader</strong>. No real trading — demo only.
+    </footer>
+  </div>
+
+  <script>
+    // tiny fake-chart renderer
+    const canvas = document.getElementById('priceChart');
+    const ctx = canvas.getContext('2d');
+    function resizeCanvas(){
+      const ratio = window.devicePixelRatio || 1;
+      const w = canvas.clientWidth; const h = 280;
+      canvas.width = Math.floor(w * ratio);
+      canvas.height = Math.floor(h * ratio);
+      ctx.scale(ratio, ratio);
+      drawChart();
+    }
+
+    const data = Array.from({length:40},(_,i)=>48000 + Math.sin(i/4)*1200 + (Math.random()-0.5)*400);
+
+    function drawChart(){
+      const w = canvas.clientWidth; const h = 280;
+      ctx.clearRect(0,0,w,h);
+      // grid
+      ctx.strokeStyle = 'rgba(3,51,74,0.06)'; ctx.lineWidth=1;
+      for(let i=0;i<5;i++){ ctx.beginPath(); ctx.moveTo(0,(h/4)*i); ctx.lineTo(w,(h/4)*i); ctx.stroke(); }
+      // path
+      const min = Math.min(...data); const max = Math.max(...data);
+      const pad = 20; const step = (w-2*pad)/(data.length-1);
+      ctx.beginPath();
+      data.forEach((val,i)=>{
+        const x = pad + i*step; const y = pad + (1 - (val-min)/(max-min))*(h-2*pad);
+        if(i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      });
+      // gradient stroke
+      const grad = ctx.createLinearGradient(0,0,w,0); grad.addColorStop(0,'#0b72ff'); grad.addColorStop(1,'#66b3ff');
+      ctx.strokeStyle = grad; ctx.lineWidth=2.5; ctx.stroke();
+      // fill under curve
+      ctx.lineTo(w-pad,h-pad); ctx.lineTo(pad,h-pad); ctx.closePath();
+      const g2 = ctx.createLinearGradient(0,0,0,h); g2.addColorStop(0,'rgba(11,114,255,0.12)'); g2.addColorStop(1,'rgba(102,179,255,0.02)');
+      ctx.fillStyle = g2; ctx.fill();
+    }
+
+    window.addEventListener('resize', ()=>{ resizeCanvas(); });
+    resizeCanvas();
+
+    // populate recent orders
+    const orders = [];
+    function addOrder(type,price,amt){
+      const now = new Date();
+      orders.unshift({time:now.toLocaleTimeString(),type,price,amt});
+      if(orders.length>8) orders.pop();
+      const tb = document.getElementById('ordersTbody'); tb.innerHTML='';
+      orders.forEach(o=>{
+        const tr = document.createElement('tr');
+        tr.innerHTML=`<td>${o.time}</td><td>${o.type}</td><td>$${Number(o.price).toFixed(2)}</td><td>${Number(o.amt)}</td>`;
+        tb.appendChild(tr);
+      });
+    }
+
+    // quick trade interactions (demo only)
+    function updateEst(){
+      const p = parseFloat(document.getElementById('priceInput').value)||0;
+      const a = parseFloat(document.getElementById('amountInput').value)||0;
+      document.getElementById('estVal').textContent = '$' + (p*a).toFixed(2);
+    }
+    document.getElementById('priceInput').addEventListener('input', updateEst);
+    document.getElementById('amountInput').addEventListener('input', updateEst);
+
+    document.getElementById('buyBtn').addEventListener('click', ()=>{
+      const p = parseFloat(document.getElementById('priceInput').value)||0;
+      const a = parseFloat(document.getElementById('amountInput').value)||0;
+      addOrder('BUY',p,a);
+      flashButton('buyBtn');
+    });
+    document.getElementById('sellBtn').addEventListener('click', ()=>{
+      const p = parseFloat(document.getElementById('priceInput').value)||0;
+      const a = parseFloat(document.getElementById('amountInput').value)||0;
+      addOrder('SELL',p,a);
+      flashButton('sellBtn');
+    });
+
+    function flashButton(id){
+      const el = document.getElementById(id); el.animate([{transform:'scale(1)'},{transform:'scale(0.98)'},{transform:'scale(1)'}],{duration:200});
+    }
+
+    // seed some orders
+    for(let i=0;i<5;i++) addOrder(i%2? 'BUY':'SELL', (48000+Math.random()*1500).toFixed(2), (Math.random()*0.5).toFixed(3));
+  </script>
+</body>
+</html>
