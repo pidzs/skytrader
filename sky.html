@@ -113,7 +113,7 @@
 
         <div class="search">
           <input id="q" placeholder="Cari model, tipe, atau fitur (mis. Cessna, jet, turboprop)" />
-          <select id="region"><option value="">Semua wilayah</option><option>Amerika</option><option>Eropa</option><option>Asia</option></select>
+          <select id="region"><option value="">Semua wilayah</option><option>Amerika</option><option>Eropa</option><option>Asia</option><option>Rusia</option></select>
           <button class="btn" onclick="applyFilter()">Cari</button>
         </div>
 
@@ -204,14 +204,14 @@
   <script>
     // sample data (replace with API in production)
     const planes = [
-      {id:1,title:'Cessna 172 Skyhawk',type:'Piston',year:2008,price:185000,loc:'Jakarta, ID',img:'cessna.jpg',desc:'Pesawat latih & pribadi, 4-seat, efisien.'},
-      {id:2,title:'Beechcraft King Air 350',type:'Turboprop',year:2016,price:4800000,loc:'Singapore',img:'beecrhaft.jpg',desc:'Turboprop twin-engine, ideal untuk korporat.'},
-      {id:3,title:'Gulfstream G280',type:'Jet',year:2019,price:27000000,loc:'Dubai, UAE',img:'gulfstream.jpg',desc:'Super mid-size business jet, kabin mewah.'},
-      {id:4,title:'Pilatus PC-12',type:'Turboprop',year:2014,price:4200000,loc:'Bangkok, TH',img:'pilatus.jpg',desc:'Serbaguna, cargo door, range jauh.'},
-      {id:5,title:'Cirrus SR22',type:'Piston',year:2021,price:725000,loc:'Surabaya, ID',img:'cirrus.jpg',desc:'Teknologi modern & parachute system.'},
-      {id:6,title:'F-16',type:'Jet',year:2023,price:107800,loc:'Frances, US',img:'jet1.jpg',desc:'Pesawat jet pribadi untuk menjelajah dunia'},
-      {id:7,title:'Jet',type:'Jet',year:2021,price:774050,loc:'London, GBP',img:'sukhoi.jpg',desc:'pesawat tempur multirole generasi kelima; mampu bertempur udara-ke-udara, serangan ke darat, dan target laut'},
-      {id:8,title:'ATR 72',type:'Turboprop',year:1997,price:149.533200000,loc:'Frances',img:'atr72.jpg',desc:'pesawat penumpang regional bermesin turboprop ganda yang dikembangkan dan diproduksi oleh produsen ATR, sebuah perusahaan patungan Prancis-Italia'},
+      {id:1,title:'Cessna 172 Skyhawk',type:'Piston',year:2008,price:18500,loc:'Jakarta, ID',img:'cessna.jpg',desc:'Pesawat latih & pribadi, 4-seat, efisien.'},
+      {id:2,title:'Beechcraft King Air 350',type:'Turboprop',year:2016,price:48090,loc:'Singapore',img:'beecrhaft.jpg',desc:'Turboprop twin-engine, ideal untuk korporat.'},
+      {id:3,title:'Gulfstream G280',type:'Jet',year:2019,price:270000,loc:'Dubai, UAE, Rusia',img:'gulfstream.jpg',desc:'Super mid-size business jet, kabin mewah.'},
+      {id:4,title:'Pilatus PC-12',type:'Turboprop',year:2014,price:42000,loc:'Bangkok, Eropa',img:'pilatus.jpg',desc:'Serbaguna, cargo door, range jauh.'},
+      {id:5,title:'Cirrus SR22',type:'Piston',year:2021,price:725000,loc:'Asia',img:'cirrus.jpg',desc:'Teknologi modern & parachute system.'},
+      {id:6,title:'F-16',type:'Jet',year:2023,price:10780,loc:'US',img:'jet1.jpg',desc:'Pesawat jet pribadi untuk menjelajah dunia'},
+      {id:7,title:'Jet',type:'Jet',year:2021,price:77400,loc:'London, US',img:'sukhoi.jpg',desc:'pesawat tempur multirole generasi kelima; mampu bertempur udara-ke-udara, serangan ke darat, dan target laut'},
+      {id:8,title:'ATR 72',type:'Turboprop',year:1997,price:149.53320,loc:'Rusia',img:'atr72.jpg',desc:'pesawat penumpang regional bermesin turboprop ganda yang dikembangkan dan diproduksi oleh produsen ATR, sebuah perusahaan patungan Prancis-Italia'},
     ];
 
     function formatPrice(v){
